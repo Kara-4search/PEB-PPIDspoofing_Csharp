@@ -1,0 +1,17 @@
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\PEBspoofing.exe.config
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\PEBspoofing.exe
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\PEBspoofing.pdb
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\obj\x86\Debug\PEBspoofing.csproj.CoreCompileInputs.cache
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\obj\x86\Debug\PEBspoofing.exe
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\obj\x86\Debug\PEBspoofing.pdb
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\PInvoke.Windows.Core.dll
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Buffers.dll
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Memory.dll
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Numerics.Vectors.dll
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\PInvoke.Windows.Core.xml
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Buffers.xml
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Memory.xml
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Numerics.Vectors.xml
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\bin\x86\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Project\Projects\Project_PEBspoofing\PEBspoofing\PEBspoofing\obj\x86\Debug\PEBspoofing.csproj.CopyComplete
