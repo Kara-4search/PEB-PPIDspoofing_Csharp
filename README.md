@@ -31,7 +31,7 @@ Blog link: working on it
 
    
 
-3. Launch the assembly through some white list application
+3. Launch the assembly through a white list application.
 
    
 
