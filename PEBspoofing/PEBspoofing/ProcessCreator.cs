@@ -30,7 +30,7 @@ public class ProcessCreator
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool InitializeProcThreadAttributeList(
-        IntPtr lpAttributeList, int dwAttributeCount, int dwFlags, ref IntPtr lpSize);
+    IntPtr lpAttributeList, int dwAttributeCount, int dwFlags, ref IntPtr lpSize);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -293,7 +293,6 @@ public class ProcessCreator
         Boolean successEx = false;
         LARGE_INTEGER liRet = new LARGE_INTEGER();
         
-
         try
         {
             if (parentProcessId > 0)
@@ -330,16 +329,13 @@ public class ProcessCreator
                     return false;
                 }
             }
-
-            
-            
-
+           
+      
             var pSec = new SECURITY_ATTRIBUTES();
             var tSec = new SECURITY_ATTRIBUTES();
             pSec.nLength = Marshal.SizeOf(pSec);
             tSec.nLength = Marshal.SizeOf(tSec);
             //var lpApplicationName = Path.Combine(Environment.SystemDirectory, "notepad.exe");
-
             
             string ori_command = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe start-process calc.exe";
             result = CreateProcess(
@@ -372,8 +368,6 @@ public class ProcessCreator
             IntPtr pMemLoc3 = Marshal.AllocHGlobal(ReadSize);
 
             // The RtlSecureZeroMemory routine fills a block of memory with zeros in a way that is guaranteed to be secure.
-            // RtlZeroMemory(pMemLoc, ReadSize * 2); 
-            // The RtlSecureZeroMemory routine fills a block of memory with zeros in a way that is guaranteed to be secure.
             RtlZeroMemory(pMemLoc2, Marshal.SizeOf(parameters));
             RtlZeroMemory(pMemLoc3, ReadSize);
             RtlZeroMemory(pMemLoc_com, commandline_len);
@@ -381,17 +375,10 @@ public class ProcessCreator
             UInt32 queryResult = NtQueryInformationProcess(newProcessHandle, 0, ref pbi, Marshal.SizeOf(pbi), ref sizePtr);
             IntPtr RTL_Address = (IntPtr)((pbi.PebBaseAddress).ToInt64() + RTL_USER_PROCESS_PARAMETERS)
 ;
-            //System.Threading.Thread.Sleep(5000);
             successEx = NtReadVirtualMemory(newProcessHandle, (IntPtr)(pbi.PebBaseAddress), pMemLoc, (uint)ReadSize, ref getsize);
-            Marshal.GetLastWin32Error();
-            //UInt64 ProcParams2 = (UInt64)Marshal.ReadInt64(pMemLoc3);
-
-            //Console.WriteLine("RTL_Address: " + string.Format("{0:X}", (UInt64)ProcParams2));
+            // Marshal.GetLastWin32Error();
 
             PebBlock = (PEB)Marshal.PtrToStructure(pMemLoc, typeof(PEB));
-            //parameters = (RTL_USER_PROCESS_PARAMETERS)Marshal.PtrToStructure(PebBlock.ProcessParameters64, typeof(RTL_USER_PROCESS_PARAMETERS));
-            //Console.WriteLine(parameters.CommandLine.Length);
-            //Console.WriteLine(parameters.CommandLine.n);
             successEx = NtReadVirtualMemory(newProcessHandle, PebBlock.ProcessParameters64, pMemLoc2, (uint)Marshal.SizeOf(parameters), ref getsize);
             parameters = (RTL_USER_PROCESS_PARAMETERS)Marshal.PtrToStructure(pMemLoc2, typeof(RTL_USER_PROCESS_PARAMETERS));
          
@@ -399,7 +386,6 @@ public class ProcessCreator
             successEx = NtReadVirtualMemory(newProcessHandle, parameters.CommandLine.buffer, pMemLoc_com, (uint)commandline_len, ref getsize);
             command_get = Marshal.PtrToStringUni(pMemLoc_com, ori_command.Length);
             
-
             Console.WriteLine("Original command：" + command_get);
             UInt64 ProcParams;
             Int32 CommandLine = 0x70;
@@ -432,39 +418,25 @@ public class ProcessCreator
             Marshal.WriteInt16(cmdStr_Length_Addr, cmdStr_Length);
             Marshal.WriteInt16(cmdStr_MaximumLength_Addr, cmdStr_MaximumLength);
 
-
-
             IntPtr real_command_addr = IntPtr.Zero;
-
             real_command_addr = Marshal.StringToHGlobalUni(cmdStr);
 
-            
-            //byte[] bytes = Encoding.ASCII.GetBytes(cmdStr); ;
-
-            NTSTATUS ntstatus = new NTSTATUS();
-
-            
+            NTSTATUS ntstatus = new NTSTATUS();           
             ntstatus = NtWriteVirtualMemory(newProcessHandle, PebBlock.ProcessParameters64 + CommandLine + 0x2, cmdStr_MaximumLength_Addr, (uint)Marshal.SizeOf(cmdStr_MaximumLength), ref getsize);
             ntstatus = NtWriteVirtualMemory(newProcessHandle, PebBlock.ProcessParameters64 + CommandLine, cmdStr_Length_Addr, (uint)Marshal.SizeOf(cmdStr_Length), ref getsize);
 
             IntPtr com_zeroAddr = Marshal.AllocHGlobal((ori_command.Length) * 2);
             RtlZeroMemory(com_zeroAddr, (ori_command.Length) * 2);
 
+            // rewrite the memory with 0x00 and then write it with real command
             ntstatus = NtWriteVirtualMemory(newProcessHandle, parameters.CommandLine.buffer, com_zeroAddr, (uint)(2 * (ori_command.Length)), ref getsize);
-
             ntstatus = NtWriteVirtualMemory(newProcessHandle, parameters.CommandLine.buffer, real_command_addr, (uint)(2 * (cmdStr.Length)), ref getsize);
 
 
 
-            Console.WriteLine(GetCurrentThread());
+            // Console.WriteLine(GetCurrentThread());
             //ResumeThread(pInfo.hProcess);
             ResumeThread(pInfo.hThread);
-            //ResumeThread(newProcessHandle);
-            //ResumeThread(newProcessHandle);
-            //bool create_success = CreateProcess(lpApplicationName, null, ref pSec, ref tSec, false, EXTENDED_STARTUPINFO_PRESENT | CREATE_SUSPENDED, IntPtr.Zero, null, ref sInfoEx, out pInfo);
-
-            //return create_success;
-            //CreateProcess(lpApplicationName, null, ref pSec, ref tSec, false, EXTENDED_STARTUPINFO_PRESENT, IntPtr.Zero, null, ref sInfoEx, out pInfo);
             return true;
         }
         finally
@@ -489,12 +461,23 @@ public class ProcessCreator
         }
     }
 
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SECURITY_ATTRIBUTES
+    {
+        public int nLength;
+        public IntPtr lpSecurityDescriptor;
+        public int bInheritHandle;
+    }
+
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     struct STARTUPINFOEX
     {
         public STARTUPINFO StartupInfo;
         public IntPtr lpAttributeList;
     }
+
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     struct STARTUPINFO
@@ -519,6 +502,7 @@ public class ProcessCreator
         public IntPtr hStdError;
     }
 
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct PROCESS_INFORMATION
     {
@@ -528,11 +512,4 @@ public class ProcessCreator
         public int dwThreadId;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct SECURITY_ATTRIBUTES
-    {
-        public int nLength;
-        public IntPtr lpSecurityDescriptor;
-        public int bInheritHandle;
-    }
 }
