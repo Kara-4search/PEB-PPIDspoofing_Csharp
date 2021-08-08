@@ -8,10 +8,10 @@ Blog link: working on it
 * It a test version, only tested in Win10_x64.
 * The purpose is to bypass Sysmon and parent process detection
 * You are gonna need to change the PPID in the Main function, OR we could add a function(like a funciton call Find_explorer) to find a process's PID as a parent process. (Most of the time, we would choose explorer.exe). 
-* I am gonna update the Find_explorer function and fix some bugs soon(DONE).
+* ~~I am gonna update the Find_explorer function and fix some bugs soon~~(DONE).
 * **Importance**!   **The Fake command line must be longer than the real one, but also there are some ideas to fix that(I am gonna talk about that in my blog), for now, you just need to remember The fake command line must be longer than the real one**
 * It only works with x64, cause the offset different from x86, also maybe I am gonna update that too.
-* I updated the code, now it's gonna find "explorer" pid automaticlly, but also you could change explorer to other process name.
+* **I updated the code, now it's gonna find "explorer" pid automaticlly, but also you could change explorer to other process name.**
 * Feel free to make any issues and advises
 
 
