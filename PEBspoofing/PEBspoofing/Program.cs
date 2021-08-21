@@ -39,7 +39,7 @@ namespace PEBspoofing
             // System.Threading.Thread.Sleep(50000);
             if (processpid != 0)
             {
-                ProcessCreator.PPID_spoofing(processpid);
+                ProcessCreator.CreateProcessPPID_Spoofing(processpid);
             }
             
             //IntPtr test = IntPtr.Zero;

