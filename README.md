@@ -12,6 +12,7 @@ Blog link: working on it
 * **Importance**!   **The Fake command line must be longer than the real one, but also there are some ideas to fix that(I am gonna talk about that in my blog), for now, you just need to remember The fake command line must be longer than the real one**
 * It only works with x64, cause the offset different from x86, also maybe I am gonna update that too.
 * **I updated the code, now it's gonna find "explorer" pid automaticlly, but also you could change explorer to other process name.**
+* I have restructed the code, make it easy for understanding.
 * Feel free to make any issues and advises
 
 

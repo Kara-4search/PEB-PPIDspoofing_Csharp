@@ -10,7 +10,6 @@ namespace PEBspoofing
 {
     public class ProcessCreator
     {
-        public static PROCESS_INFORMATION PROCESS_INFORMATION_instance = new PROCESS_INFORMATION();
 
         private static Object FindObjectAddress(IntPtr BaseAddress, Object StructObject, IntPtr Handle)
         {
@@ -112,8 +111,7 @@ namespace PEBspoofing
                     out pInfo
                 );
 
-                PROCESS_INFORMATION_instance = pInfo;
-                Commandline_Spoofing(parentProcessId, PROCESS_INFORMATION_instance);
+                Commandline_Spoofing(parentProcessId, pInfo);
                 ResumeThread(pInfo.hThread);
             }
             finally
@@ -141,7 +139,7 @@ namespace PEBspoofing
         }
 
 
-        public static bool Commandline_Spoofing(int parentProcessId, PROCESS_INFORMATION PROCESS_INFORMATION_instance)
+        public static NTSTATUS Commandline_Spoofing(int parentProcessId, PROCESS_INFORMATION PROCESS_INFORMATION_instance)
         {
             PROCESS_BASIC_INFORMATION PROCESS_BASIC_INFORMATION_instance = new PROCESS_BASIC_INFORMATION();
             IntPtr ProcessHandle = OpenProcess((uint)ProcessAccessFlags.All, false, PROCESS_INFORMATION_instance.dwProcessId);
@@ -195,80 +193,14 @@ namespace PEBspoofing
                 (uint)cmdStr_Length, 
                 ref sizePtr);
 
-
-
             /*
-            PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
-            PEB PebBlock = new PEB();
-            RTL_USER_PROCESS_PARAMETERS parameters = new RTL_USER_PROCESS_PARAMETERS();
-            Boolean successEx = false;
-
-
-            Int32 commandline_len = (ori_command.Length) * 2;
-            IntPtr pMemLoc = Marshal.AllocHGlobal(Marshal.SizeOf(PebBlock));
-            IntPtr pMemLoc2 = Marshal.AllocHGlobal(Marshal.SizeOf(parameters));
-            IntPtr pMemLoc_com = Marshal.AllocHGlobal(commandline_len);
-            string command_get = "";
-
-            uint getsize = 0;
-            Int32 ReadSize = 64;
-            Int32 RTL_USER_PROCESS_PARAMETERS = 0x20;
-            IntPtr pMemLoc3 = Marshal.AllocHGlobal(ReadSize);
-
-            // The RtlSecureZeroMemory routine fills a block of memory with zeros in a way that is guaranteed to be secure.
-            RtlZeroMemory(pMemLoc2, Marshal.SizeOf(parameters));
-            RtlZeroMemory(pMemLoc3, ReadSize);
-            RtlZeroMemory(pMemLoc_com, commandline_len);
-            newProcessHandle = OpenProcess((uint)ProcessAccessFlags.All, false, pInfo.dwProcessId);
-            UInt32 queryResult = NtQueryInformationProcess(newProcessHandle, 0, ref pbi, Marshal.SizeOf(pbi), ref sizePtr);
-            IntPtr RTL_Address = (IntPtr)((pbi.PebBaseAddress).ToInt64() + RTL_USER_PROCESS_PARAMETERS)
-;
-            successEx = NtReadVirtualMemory(newProcessHandle, (IntPtr)(pbi.PebBaseAddress), pMemLoc, (uint)ReadSize, ref getsize);
-            // Marshal.GetLastWin32Error();
-
-            PebBlock = (PEB)Marshal.PtrToStructure(pMemLoc, typeof(PEB));
-            successEx = NtReadVirtualMemory(newProcessHandle, PebBlock.ProcessParameters64, pMemLoc2, (uint)Marshal.SizeOf(parameters), ref getsize);
-            parameters = (RTL_USER_PROCESS_PARAMETERS)Marshal.PtrToStructure(pMemLoc2, typeof(RTL_USER_PROCESS_PARAMETERS));
-
-
-            successEx = NtReadVirtualMemory(newProcessHandle, parameters.CommandLine.buffer, pMemLoc_com, (uint)commandline_len, ref getsize);
-            command_get = Marshal.PtrToStringUni(pMemLoc_com, ori_command.Length);
-
-            Console.WriteLine("Original command：" + command_get);
-            UInt64 ProcParams;
-            Int32 CommandLine = 0x70;
-
-            string cmdStr = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
-            short cmdStr_Length = (short)(2 * cmdStr.Length);
-            short cmdStr_MaximumLength = (short)(2 * cmdStr.Length + 2);
-
-            IntPtr cmdStr_Length_Addr = Marshal.AllocHGlobal(Marshal.SizeOf(cmdStr_Length));
-            IntPtr cmdStr_MaximumLength_Addr = Marshal.AllocHGlobal(Marshal.SizeOf(cmdStr_MaximumLength));
-
-            Marshal.WriteInt16(cmdStr_Length_Addr, cmdStr_Length);
-            Marshal.WriteInt16(cmdStr_MaximumLength_Addr, cmdStr_MaximumLength);
-
-            IntPtr real_command_addr = IntPtr.Zero;
-            real_command_addr = Marshal.StringToHGlobalUni(cmdStr);
-
             NTSTATUS ntstatus = new NTSTATUS();
             ntstatus = NtWriteVirtualMemory(newProcessHandle, PebBlock.ProcessParameters64 + CommandLine + 0x2, cmdStr_MaximumLength_Addr, (uint)Marshal.SizeOf(cmdStr_MaximumLength), ref getsize);
             ntstatus = NtWriteVirtualMemory(newProcessHandle, PebBlock.ProcessParameters64 + CommandLine, cmdStr_Length_Addr, (uint)Marshal.SizeOf(cmdStr_Length), ref getsize);
-
-            IntPtr com_zeroAddr = Marshal.AllocHGlobal((ori_command.Length) * 2);
-            RtlZeroMemory(com_zeroAddr, (ori_command.Length) * 2);
-
-            // rewrite the memory with 0x00 and then write it with real command
-            ntstatus = NtWriteVirtualMemory(newProcessHandle, parameters.CommandLine.buffer, com_zeroAddr, (uint)(2 * (ori_command.Length)), ref getsize);
-            ntstatus = NtWriteVirtualMemory(newProcessHandle, parameters.CommandLine.buffer, real_command_addr, (uint)(2 * (cmdStr.Length)), ref getsize);
-
-
-
-            // Console.WriteLine(GetCurrentThread());
-            //ResumeThread(pInfo.hProcess);
-            
             */
-            return true;
+
+          
+            return ntstatus;
             
 
             }
