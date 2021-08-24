@@ -40,7 +40,7 @@ Blog link: working on it
 ## To-Do list
 1. ~~Restruct PEB-PPIDspoofing_Csharp code.~~ - DONE
 
-## Update histroy
+## Update history
 - Find process's pid automaticlly - 20210804
 - Restruct code - 20210821
 

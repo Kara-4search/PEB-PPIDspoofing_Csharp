@@ -136,8 +136,6 @@ namespace PEBspoofing
                                        //public UNICODE_STRING DLCurrentDirectory;
         };
 
-
-
         [StructLayout(LayoutKind.Explicit, Size = 8)]
         struct LARGE_INTEGER
         {

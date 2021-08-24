@@ -50,7 +50,6 @@ namespace PEBspoofing
             bool result;
             string nullstr = null;
 
-
             try
             {
                 if (parentProcessId > 0)
