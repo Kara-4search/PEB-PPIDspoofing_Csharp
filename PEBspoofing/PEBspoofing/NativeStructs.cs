@@ -26,8 +26,6 @@ namespace PEBspoofing
         }
 
 
-
-
         /*
         public static IntPtr OpenProcess(Process proc, ProcessAccessFlags flags)
         {
