@@ -94,12 +94,12 @@ namespace PEBspoofing
                 tSec.nLength = Marshal.SizeOf(tSec);
                 //var lpApplicationName = Path.Combine(Environment.SystemDirectory, "notepad.exe");
 
-                string ori_command = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe start-process calc.exe";
+                string ori_command = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe start-process mspaint.exe";
                 result = CreateProcess(
                     nullstr,
                     ori_command,
-                    IntPtr.Zero,
-                    IntPtr.Zero,
+                    pSec,
+                    tSec,
                     true,
                     CreateProcessFlags.CREATE_SUSPENDED |
                     CreateProcessFlags.EXTENDED_STARTUPINFO_PRESENT |
@@ -165,15 +165,14 @@ namespace PEBspoofing
                 RTL_USER_PROCESS_PARAMETERS_instance,
                 ProcessHandle);
 
-            string cmdStr = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+            string cmdStr = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe calc.exe";
             int cmdStr_Length = 2 * cmdStr.Length;
             int cmdStr_MaximumLength = 2 * cmdStr.Length + 2;
 
-            IntPtr real_command_addr = IntPtr.Zero;
-            real_command_addr = Marshal.StringToHGlobalUni(cmdStr);
+            IntPtr real_command_addr = Marshal.StringToHGlobalUni(cmdStr);
 
             NTSTATUS ntstatus = new NTSTATUS();
-            int OriginalCommand_length = (int)RTL_USER_PROCESS_PARAMETERS_instance.Length;
+            int OriginalCommand_length = (int)RTL_USER_PROCESS_PARAMETERS_instance.CommandLine.Length;
             IntPtr com_zeroAddr = Marshal.AllocHGlobal(OriginalCommand_length);
             RtlZeroMemory(com_zeroAddr, OriginalCommand_length);
 
@@ -182,7 +181,7 @@ namespace PEBspoofing
                 ProcessHandle, 
                 RTL_USER_PROCESS_PARAMETERS_instance.CommandLine.buffer, 
                 com_zeroAddr,
-                RTL_USER_PROCESS_PARAMETERS_instance.Length, 
+                (uint)OriginalCommand_length, 
                 ref sizePtr);
            
             ntstatus = NtWriteVirtualMemory(

@@ -15,8 +15,8 @@ namespace PEBspoofing
         public static extern bool CreateProcess(
            string lpApplicationName,
            string lpCommandLine,
-           IntPtr lpProcessAttributes,
-           IntPtr lpThreadAttributes,
+           SECURITY_ATTRIBUTES lpProcessAttributes,
+           SECURITY_ATTRIBUTES lpThreadAttributes,
            bool bInheritHandles,
            CreateProcessFlags dwCreationFlags,
            IntPtr lpEnvironment,
