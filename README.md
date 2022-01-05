@@ -43,7 +43,7 @@ Blog link: working on it
 ## Update history
 - Find process's pid automaticlly - 20210804
 - Restructure code - 20210821
-- Fixed bugs: Line 175 in ProcessCreator.cs, NtWriteVirtualMemory with wrong args.
+- Fixed bugs: Line 175 in ProcessCreator.cs, NtWriteVirtualMemory with wrong args. - 20220105
 
 
 ## Reference link 
