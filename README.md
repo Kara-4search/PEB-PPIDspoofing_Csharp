@@ -6,6 +6,9 @@ Blog link:
 * part-1: https://mp.weixin.qq.com/s/oboW9ToiTUNfiOExHFrXXA
 * part-2: https://mp.weixin.qq.com/s/oFxkeR9gvHw26Z5-DijZ2w
 
+&nbsp;
+&nbsp;
+
 * Create a process with a fake PPID and a fake command line.
 * It a test version, only tested in Win10_x64.
 * The purpose is to bypass Sysmon and parent process detection
