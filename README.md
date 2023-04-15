@@ -2,7 +2,9 @@
 
 
 
-Blog link: working on it
+Blog link: 
+	* part-1: https://mp.weixin.qq.com/s/oboW9ToiTUNfiOExHFrXXA
+	* part-2: https://mp.weixin.qq.com/s/oFxkeR9gvHw26Z5-DijZ2w
 
 * Create a process with a fake PPID and a fake command line.
 * It a test version, only tested in Win10_x64.
@@ -44,6 +46,7 @@ Blog link: working on it
 - Find process's pid automaticlly - 20210804
 - Restructure code - 20210821
 - Fixed bugs: Line 175 in ProcessCreator.cs, NtWriteVirtualMemory with wrong args. - 20220105
+- Update blog link for PEB-PPIDspoofing - 20230415
 
 
 ## Reference link 
